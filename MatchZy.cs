@@ -78,6 +78,11 @@ namespace MatchZy
 
         public bool playerHasTakenDamage = false;
 
+        // Match Database Config for DreamLeague
+        public string matchDatabaseConnectionString = "mongodb://root:Password1234!@dreamleague-database-matches-1:27017";
+        public string matchDatabaseName = "dreamleague";
+        public string matchDatabaseCollection = "matches";
+
         // User command - action map
         public Dictionary<string, Action<CCSPlayerController?, CommandInfo?>>? commandActions;
 
