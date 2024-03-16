@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Text.Json;
 using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
@@ -5,6 +6,11 @@ using CounterStrikeSharp.API.Core.Attributes.Registration;
 using CounterStrikeSharp.API.Modules.Commands;
 using CounterStrikeSharp.API.Modules.Cvars;
 using CounterStrikeSharp.API.Modules.Utils;
+using dreamleague.Common.Entities.Rcon;
+using MongoDB.Bson;
+using MongoDB.Bson.IO;
+using MongoDB.Driver;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 
@@ -130,6 +136,61 @@ namespace MatchZy
             catch (Exception e)
             {
                 Log($"[LoadMatchFromURL - FATAL] An error occured: {e.Message}");
+                return;
+            }
+        }
+
+        [ConsoleCommand("dreamleague_loadmatch", "Loads a match from the Match ID")]
+        public void DreamLeagueLoadMatchFromID(CCSPlayerController? player, CommandInfo command)
+        {
+            if (player != null) return;
+            if (isMatchSetup)
+            {
+                command.ReplyToCommand($"[DreamLeagueLoadMatchFromID] A match is already setup with id: {liveMatchId}, cannot load a new match!");
+                Log($"[DreamLeagueLoadMatchFromID] A match is already setup with id: {liveMatchId}, cannot load a new match!");
+                return;
+            }
+            try
+            {
+                if (Int32.TryParse(command.ArgString, out int matchid))
+                {
+                    Log($"[DreamLeagueLoadMatchFromID] Received following data: {matchid}");
+
+                    var database = new MongoClient(new MongoUrl(matchDatabaseConnectionString)).GetDatabase(matchDatabaseName);
+
+                    var filter = Builders<RconMatch>.Filter
+                                .Eq(r => r.matchid, matchid.ToString());
+
+                    var collection = database.GetCollection<RconMatch>(matchDatabaseCollection);
+
+                    var match =  collection.Find(filter).FirstOrDefault();
+
+                    var jsonWriterSettings = new JsonWriterSettings { OutputMode = JsonOutputMode.Strict };
+
+                    var matchJson = match.ToJson(jsonWriterSettings);
+
+                    Log($"[DreamLeagueLoadMatchFromID] Retrieved the following JSON from the database: {matchJson}");
+
+                    if (matchJson == null) { command.ReplyToCommand($"[DreamLeagueLoadMatchFromID] Invalid ID: {matchid}. Please provide a valid ID to load the match!"); }
+
+                    bool success = LoadMatchFromJSON(matchJson);
+                    if (!success)
+                    {
+                        command.ReplyToCommand("Match load failed! Resetting current match");
+                        ResetMatch();
+                    }
+                    return;
+                }
+                else
+                {
+                    command.ReplyToCommand($"[DreamLeagueLoadMatchFromID] Invalid ID: {command.ArgString}. Please provide a valid ID to load the match!");
+                    Log($"[DreamLeagueLoadMatchFromID] Invalid ID : {command.ArgString}. Please provide a valid ID to load the match!");
+                    return;
+                }
+            }
+            catch (Exception e)
+            {
+                Log($"[DreamLeagueLoadMatchFromID - FATAL] An error occured: {e.Message}");
                 return;
             }
         }

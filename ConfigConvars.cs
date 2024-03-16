@@ -18,7 +18,53 @@ namespace MatchZy
 
             isWhitelistRequired = bool.TryParse(args, out bool isWhitelistRequiredValue) ? isWhitelistRequiredValue : args != "0" && isWhitelistRequired;
         }
-        
+
+        [ConsoleCommand("dreamleague_match_database", "Defines the connection string for the Dreamleague Match Database if necessary. Default value: \"mongodb://root:Password1234!@dreamleague-database-matches-1:27017\"")]
+        public void DreamleagueMatchDatabaseConvar(CCSPlayerController? player, CommandInfo command)
+        {
+            if (player != null) return;
+            if (command.ArgCount == 2)
+            {
+                string format = command.ArgByIndex(1).Trim();
+
+                if (!string.IsNullOrEmpty(format))
+                {
+                    matchDatabaseConnectionString = format;
+                }
+            }
+        }
+
+
+        [ConsoleCommand("dreamleague_match_database_name", "Defines the name for the Dreamleague Match Database if necessary. Default value: \"dreamleague\" ")]
+        public void DreamleagueMatchDatabaseNameConvar(CCSPlayerController? player, CommandInfo command)
+        {
+            if (player != null) return;
+            if (command.ArgCount == 2)
+            {
+                string format = command.ArgByIndex(1).Trim();
+
+                if (!string.IsNullOrEmpty(format))
+                {
+                    matchDatabaseName = format;
+                }
+            }
+        }
+
+        [ConsoleCommand("dreamleague_match_database_collection", "Defines the collection for the Dreamleague Match Database if necessary. Default value: \"matches\" ")]
+        public void DreamleagueMatchDatabaseCollectionConvar(CCSPlayerController? player, CommandInfo command)
+        {
+            if (player != null) return;
+            if (command.ArgCount == 2)
+            {
+                string format = command.ArgByIndex(1).Trim();
+
+                if (!string.IsNullOrEmpty(format))
+                {
+                    matchDatabaseCollection = format;
+                }
+            }
+        }
+
         [ConsoleCommand("matchzy_knife_enabled_default", "Whether knife round is enabled by default or not. Default value: true")]
         public void MatchZyKnifeConvar(CCSPlayerController? player, CommandInfo command)
         {
