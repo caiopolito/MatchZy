@@ -6,7 +6,7 @@ using CounterStrikeSharp.API.Core.Attributes.Registration;
 using CounterStrikeSharp.API.Modules.Commands;
 using CounterStrikeSharp.API.Modules.Cvars;
 using CounterStrikeSharp.API.Modules.Utils;
-using dreamleague.Common.Entities.Rcon;
+using dreamleague.common.Entities.Rcon;
 using MongoDB.Bson;
 using MongoDB.Bson.IO;
 using MongoDB.Driver;
