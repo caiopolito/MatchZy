@@ -420,7 +420,7 @@ namespace MatchZy
             ExecuteChangedConvars();
 
             StartWarmup();
-            Server.ExecuteCommand($"mp_warmuptime {(int)dreamleagueWarmupTimeout.Value}");
+            AddTimer(0.1f, () => Server.ExecuteCommand($"mp_warmuptime {(int)dreamleagueWarmupTimeout.Value}"));
 
             isMatchSetup = true;
 
