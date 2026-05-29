@@ -429,6 +429,20 @@ namespace MatchZy
             UpdatePlayersMap();
             UpdateHostname();
 
+            warmupTimeoutTimer?.Kill();
+            warmupTimeoutTimer = AddTimer(dreamleagueWarmupTimeout.Value, () =>
+            {
+                if (matchStarted) return;
+                Log($"[WarmupTimeout] Warmup timed out after {dreamleagueWarmupTimeout.Value}s with {connectedPlayers}/{matchConfig.PlayersPerTeam * 2} players. Cancelling match.");
+                PrintToAllChat(Localizer["dreamleague.warmup.timeout"]);
+                foreach (var player in playerData.Values.ToList())
+                {
+                    if (player.IsValid && player.UserId.HasValue)
+                        Server.ExecuteCommand($"kickid {(ushort)player.UserId}");
+                }
+                ResetMatch(warmupCfgRequired: false);
+            });
+
             var seriesStartedEvent = new MatchZySeriesStartedEvent
             {
                 MatchId = liveMatchId,
