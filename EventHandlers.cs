@@ -42,7 +42,8 @@ public partial class MatchZy
                 connectedPlayers++;
                 if (readyAvailable && !matchStarted)
                 {
-                    playerReadyStatus[player.UserId.Value] = false;
+                    bool autoReady = isMatchSetup && matchConfig.MinPlayersToReady == 0;
+                    playerReadyStatus[player.UserId.Value] = autoReady;
                 }
                 else
                 {
@@ -55,8 +56,11 @@ public partial class MatchZy
 
             if (readyAvailable && !matchStarted)
             {
-                // Start Warmup when first player connect and match is not started.
-                if (GetRealPlayersCount() == 1)
+                if (isMatchSetup && matchConfig.MinPlayersToReady == 0)
+                {
+                    CheckLiveRequired();
+                }
+                else if (GetRealPlayersCount() == 1)
                 {
                     Log($"[FULL CONNECT] First player has connected, starting warmup!");
                     ExecUnpracCommands();
