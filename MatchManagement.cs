@@ -419,8 +419,7 @@ namespace MatchZy
             // This is done before starting warmup so that cvars like get5_remote_log_url are set properly to send the events
             ExecuteChangedConvars();
 
-            StartWarmup();
-            AddTimer(0.1f, () => Server.ExecuteCommand($"mp_warmuptime {(int)dreamleagueWarmupTimeout.Value}"));
+            StartWarmup((int)dreamleagueWarmupTimeout.Value);
 
             isMatchSetup = true;
 
@@ -442,6 +441,7 @@ namespace MatchZy
                         Server.ExecuteCommand($"kickid {(ushort)player.UserId}");
                 }
                 ResetMatch(warmupCfgRequired: false);
+                StartSleepMode();
             });
 
             var seriesStartedEvent = new MatchZySeriesStartedEvent

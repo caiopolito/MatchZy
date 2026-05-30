@@ -39,7 +39,7 @@ namespace MatchZy
             isWhitelistRequired = bool.TryParse(args, out bool isWhitelistRequiredValue) ? isWhitelistRequiredValue : args != "0" && isWhitelistRequired;
         }
 
-        public FakeConVar<float> dreamleagueWarmupTimeout = new("dreamleague_warmup_timeout", "Seconds to wait during warmup before cancelling the match if not all players connect. Default: 120", 120f);
+        public FakeConVar<float> dreamleagueWarmupTimeout = new("dreamleague_warmup_timeout", "Seconds to wait during warmup before cancelling the match if not all players connect. Default: 180", 180f);
 
         [ConsoleCommand("dreamleague_match_database", "Defines the connection string for the Dreamleague Match Database if necessary. Default value: \"mongodb://root:Password1234!@dreamleague-database-matches-1:27017\"")]
         public void DreamleagueMatchDatabaseConvar(CCSPlayerController? player, CommandInfo command)
