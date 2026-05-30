@@ -347,7 +347,10 @@ namespace MatchZy
                 MapsPool = maplist.ToObject<List<string>>()!,
                 MapsLeftInVetoPool = maplist.ToObject<List<string>>()!,
                 NumMaps = jsonDataObject["num_maps"]!.Value<int>(),
-                MinPlayersToReady = minimumReadyRequired
+                MinPlayersToReady = minimumReadyRequired,
+                RemoteLogURL = matchConfig.RemoteLogURL,
+                RemoteLogHeaderKey = matchConfig.RemoteLogHeaderKey,
+                RemoteLogHeaderValue = matchConfig.RemoteLogHeaderValue,
             };
 
             GetOptionalMatchValues(jsonDataObject);
