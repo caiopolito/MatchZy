@@ -40,19 +40,6 @@ namespace MatchZy
         }
 
         public FakeConVar<float> dreamleagueWarmupTimeout = new("dreamleague_warmup_timeout", "Seconds to wait during warmup before cancelling the match if not all players connect. Default: 180", 180f);
-        public string dreamleagueApiUrl = "";
-
-        [ConsoleCommand("dreamleague_api_url", "DreamLeague API base URL for match finish callbacks. Example: http://dreamleague-api-1:5000")]
-        public void DreamleagueApiUrlConvar(CCSPlayerController? player, CommandInfo command)
-        {
-            if (player != null) return;
-            if (command.ArgCount == 2)
-            {
-                string url = command.ArgByIndex(1).Trim().TrimEnd('/');
-                if (!string.IsNullOrEmpty(url))
-                    dreamleagueApiUrl = url;
-            }
-        }
 
         [ConsoleCommand("dreamleague_match_database", "Defines the connection string for the Dreamleague Match Database if necessary. Default value: \"mongodb://root:Password1234!@dreamleague-database-matches-1:27017\"")]
         public void DreamleagueMatchDatabaseConvar(CCSPlayerController? player, CommandInfo command)

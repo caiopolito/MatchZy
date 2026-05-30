@@ -419,10 +419,6 @@ namespace MatchZy
             // This is done before starting warmup so that cvars like get5_remote_log_url are set properly to send the events
             ExecuteChangedConvars();
 
-            // Auto-wire the event callback URL if not supplied in the match JSON
-            if (!string.IsNullOrEmpty(dreamleagueApiUrl) && string.IsNullOrEmpty(matchConfig.RemoteLogURL))
-                matchConfig.RemoteLogURL = $"{dreamleagueApiUrl}/api/match/event";
-
             StartWarmup((int)dreamleagueWarmupTimeout.Value);
 
             isMatchSetup = true;
@@ -445,7 +441,14 @@ namespace MatchZy
                     if (player.IsValid && player.UserId.HasValue)
                         Server.ExecuteCommand($"kickid {(ushort)player.UserId}");
                 }
-                NotifyApiMatchFinish(cancelledMatchId, "none", 1);
+                Task.Run(async () => await SendEventAsync(new MatchZySeriesResultEvent
+                {
+                    MatchId = cancelledMatchId,
+                    Winner = new Winner("", "none"),
+                    Team1SeriesScore = 0,
+                    Team2SeriesScore = 0,
+                    TimeUntilRestore = 0,
+                }));
                 ResetMatch(warmupCfgRequired: false);
                 StartSleepMode();
             });
@@ -692,30 +695,6 @@ namespace MatchZy
             isMatchLive = false;
             AddTimer(restartDelay, () => {
                 ResetMatch(false);
-            });
-        }
-
-        private void NotifyApiMatchFinish(long matchId, string winner, int forfeit)
-        {
-            if (string.IsNullOrEmpty(dreamleagueApiUrl)) return;
-            Task.Run(async () =>
-            {
-                try
-                {
-                    using var httpClient = new HttpClient();
-                    var form = new FormUrlEncodedContent(new[]
-                    {
-                        new KeyValuePair<string, string>("winner", winner),
-                        new KeyValuePair<string, string>("forfeit", forfeit.ToString()),
-                    });
-                    var url = $"{dreamleagueApiUrl}/api/match/{matchId}/finish";
-                    var response = await httpClient.PostAsync(url, form);
-                    Log($"[NotifyApiMatchFinish] POST {url} → {(int)response.StatusCode}");
-                }
-                catch (Exception e)
-                {
-                    Log($"[NotifyApiMatchFinish FATAL] {e.Message}");
-                }
             });
         }
 
