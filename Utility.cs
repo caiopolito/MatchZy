@@ -361,10 +361,12 @@ namespace MatchZy
             sideSelectionMessageTimer?.Kill();
             pausedStateTimer?.Kill();
             warmupTimeoutTimer?.Kill();
+            warmupCountdownTimer?.Kill();
             unreadyPlayerMessageTimer = null;
             sideSelectionMessageTimer = null;
             pausedStateTimer = null;
             warmupTimeoutTimer = null;
+            warmupCountdownTimer = null;
         }
 
         private (int alivePlayers, int totalHealth) GetAlivePlayers(int team)

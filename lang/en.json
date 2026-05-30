@@ -1,5 +1,6 @@
 {
   "dreamleague.warmup.timeout": "Warmup timed out — not all players connected. Match has been cancelled.",
+  "dreamleague.warmup.countdown": "Not all players connected. Match cancels in {red}{0}{default} second(s).",
   "matchzy.ready.markedready": "You have been marked as ready.",
   "matchzy.ready.markedunready": "You have been marked as NOT ready.",
   "matchzy.ready.readytotestorebackupinfomessage": "Unready players: {0}. Please type .ready when you are ready to restore the match backup. {1}",

@@ -456,6 +456,23 @@ namespace MatchZy
                 StartSleepMode();
             });
 
+            warmupCountdownTimer?.Kill();
+            warmupCountdownTimer = null;
+            if (dreamleagueWarmupTimeout.Value > 20)
+            {
+                warmupCountdownTimer = AddTimer(dreamleagueWarmupTimeout.Value - 20f, () =>
+                {
+                    int remaining = 20;
+                    warmupCountdownTimer = AddTimer(1.0f, () =>
+                    {
+                        if (matchStarted) { warmupCountdownTimer?.Kill(); warmupCountdownTimer = null; return; }
+                        if (remaining == 20 || remaining == 15 || remaining == 10 || remaining <= 5)
+                            PrintToAllChat(Localizer["dreamleague.warmup.countdown", remaining]);
+                        remaining--;
+                    }, TimerFlags.REPEAT);
+                });
+            }
+
             var seriesStartedEvent = new MatchZySeriesStartedEvent
             {
                 MatchId = liveMatchId,
