@@ -2,3 +2,6 @@ obj/*
 bin/*
 /.vs
 MatchZy.sln
+# Claude Code
+CLAUDE.md
+.claude/
