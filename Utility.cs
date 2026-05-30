@@ -220,14 +220,17 @@ namespace MatchZy
             {
                 if (warmupTime > 0)
                 {
-                    // Inline the cfg commands so we can control mp_warmuptime in the same tick,
-                    // avoiding exec deferral overwriting our value.
+                    // Inline cfg commands so mp_warmuptime is set BEFORE mp_warmup_start.
+                    // CS2 locks the timer duration at the moment mp_warmup_start fires,
+                    // so the order must be: other cvars → mp_warmuptime → mp_warmup_start.
                     Log($"[StartWarmup] Starting warmup with timeout {warmupTime}s, inlining {warmupCfgPath}");
                     var lines = File.ReadAllLines(absolutePath)
                         .Select(l => l.Split("//")[0].Trim())
                         .Where(l => !string.IsNullOrWhiteSpace(l)
-                                 && !l.StartsWith("mp_warmuptime", StringComparison.OrdinalIgnoreCase));
-                    Server.ExecuteCommand(string.Join(";", lines) + $";mp_warmuptime {warmupTime}");
+                                 && !l.StartsWith("mp_warmuptime", StringComparison.OrdinalIgnoreCase)
+                                 && !l.StartsWith("mp_warmup_start", StringComparison.OrdinalIgnoreCase)
+                                 && !l.StartsWith("mp_warmup_pausetimer", StringComparison.OrdinalIgnoreCase));
+                    Server.ExecuteCommand(string.Join(";", lines) + $";mp_warmuptime {warmupTime};mp_warmup_pausetimer 0;mp_warmup_start");
                 }
                 else
                 {
