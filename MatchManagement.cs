@@ -5,7 +5,6 @@ using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Core.Attributes.Registration;
 using CounterStrikeSharp.API.Modules.Commands;
 using CounterStrikeSharp.API.Modules.Cvars;
-using CounterStrikeSharp.API.Modules.Timers;
 using CounterStrikeSharp.API.Modules.Utils;
 using dreamleague.common.Entities.Rcon;
 using MongoDB.Bson;
@@ -423,7 +422,7 @@ namespace MatchZy
             // This is done before starting warmup so that cvars like get5_remote_log_url are set properly to send the events
             ExecuteChangedConvars();
 
-            StartWarmup((int)dreamleagueWarmupTimeout.Value);
+            StartWarmup();
 
             isMatchSetup = true;
 
